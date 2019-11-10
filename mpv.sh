@@ -18,7 +18,7 @@ __CONFIG_DIR__=
 __META_DIR__=
 __PROJECT_DIR__=
 __APP_DIR__=
-__HOSTNAME__=`hostname`
+__HOSTNAME__="$(hostname)"
 
 # =============================================================================
 # Utility Functions
@@ -164,7 +164,7 @@ setprompt()
         face='( ^_^)'
         facecol=$happyface
     fi
-    scm_upper=`echo ${__CURRENT_SCM__} | tr '[:lower:]' '[:upper:]'`
+    scm_upper="${__CURRENT_SCM__^^}"
     truncate_path $PWD "tpath"
     settitle "${__HOSTNAME__}"
     export PS1="${bgray}SCM:${dblue}${scm_upper}${bgray} MVPA:${dblue}${__CURRENT_META__:-_}${bwhite}/${dblue}${__CURRENT_PROJECT__:-_}${bwhite}/${dblue}${__CURRENT_APP__:-_} ${bgray}PWD:${dblue}${tpath}\n${bgray}[${dblue}${__HOSTNAME__}${bgray}]${facecol}${face} ${bgray}> ${plain}"
@@ -191,7 +191,7 @@ load_scm_state() {
     __CONFIG_DIR__=${__SCM_DIR__}/.mpv
     mkdir -p ${__CONFIG_DIR__}
     source ${__SCRIPT_DIR__}/scm/${__CURRENT_SCM__}.sh
-    lastmeta=`cat $__CONFIG_DIR__/lastmeta`
+    lastmeta=$(cat $__CONFIG_DIR__/lastmeta)
     if [[ ! -z $lastmeta ]]; then
         change_meta $lastmeta
         return $?
@@ -202,7 +202,7 @@ load_scm_state() {
 change_scm()
 {
     new_scm=
-    readarray -t scm_list <<< `available_scm | sort`
+    readarray -t scm_list <<< $(available_scm | sort)
     verify_selection scm_list[@] "$1" new_scm
     if [[ $? -ne 0 ]]; then
         return 1
@@ -215,7 +215,7 @@ change_scm()
 
 load_last_scm()
 {
-    last_scm=`cat ${__DEV_SPACE__}/.scm`
+    last_scm=$(cat ${__DEV_SPACE__}/.scm)
     if [[ ! -z $last_scm ]]; then
         change_scm $last_scm
     fi
@@ -241,7 +241,7 @@ load_meta_state()
     __META_DIR__=$__SCM_DIR__/$__CURRENT_META__
     mfile="$__CONFIG_DIR__/$__CURRENT_META__.lastproject"
     if [[ -f $mfile ]]; then
-        __CURRENT_PROJECT__=`cat $mfile`
+	__CURRENT_PROJECT__=$(cat $mfile)
         load_project_state
         return $?
     fi
@@ -251,7 +251,7 @@ load_meta_state()
 change_meta()
 {
     new_meta=
-    readarray -t meta_list <<< `available_meta | sort -z`
+    readarray -t meta_list <<< $(available_meta | sort)
     verify_selection meta_list[@] "$1" new_meta
     if [[ $? -ne 0 ]]; then
         return 1
@@ -281,7 +281,7 @@ load_project_state()
     __PROJECT_DIR__=$__META_DIR__/$__CURRENT_PROJECT__
     vfile="$__CONFIG_DIR__/$__CURRENT_META__.$__CURRENT_PROJECT__.lastapp"
     if [[ -f $vfile ]]; then
-        __CURRENT_APP__=`cat $vfile`
+	__CURRENT_APP__=$(cat $vfile)
         load_app_state
         return $?
     fi
@@ -291,7 +291,7 @@ load_project_state()
 change_project()
 {
     new_project=
-    readarray -t project_list <<< `available_projects | sort -z`
+    readarray -t project_list <<< $(available_projects | sort)
     verify_selection project_list[@] "$1" new_project
     if [[ $? -ne 0 ]]; then
         return 1
@@ -324,7 +324,7 @@ load_app_state()
 change_app()
 {
     new_app=
-    readarray -t app_list <<< `available_apps | sort -z`
+    readarray -t app_list <<< $(available_apps | sort)
     verify_selection app_list[@] "$1" new_app
     if [[ $? -ne 0 ]]; then
         return 1

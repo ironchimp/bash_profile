@@ -1,4 +1,4 @@
-export __GIT_BASE_URL__="git@github.com:ironchimp"
+export __GIT_BASE_URL__="git@github.com"
 
 github_update() {
     old_dir=`pwd`
@@ -34,7 +34,7 @@ github_checkout() {
     if [[ "${meta}" == "$USER" ]]; then
         meta="~$USER"
     fi
-    url="${__GIT_BASE_URL__}/${meta}/${project}.git"
+    url="${__GIT_BASE_URL__}:${meta}/${project}.git"
     echo $url
     git clone ${url} ${__SCM_DIR__}/${meta_dir}/${project}
 }
